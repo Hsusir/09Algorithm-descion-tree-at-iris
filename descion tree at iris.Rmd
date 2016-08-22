@@ -1,0 +1,78 @@
+---
+title: "Descion tree at iris"
+author: "許sir"
+
+---
+
+### 載入Packages 及設定工作區
+```{}
+install.packages("tree")
+install.packages("party")
+install.packages("randomForest")
+install.packages("rpart")
+install.packages("rpart.plot")
+install.packages("dplyr")
+
+```
+
+
+```{r message=FALSE, warning=FALSE, results='hide'}
+library(tree)
+library(party)
+library(rpart)
+library(randomForest)
+library(dplyr)#dplyr是對資料做整理的套件
+library(ggplot2)#ggplot2 是劃圖套件
+library(rpart)# rpart 是決策樹套件
+library(rpart.plot)#rpart.plot是決策樹的繪圖套件
+
+setwd("/media/hsusir/DATA/Rdata Practice/09Algorithm/descion-tree-at-iris/")
+
+data(iris)
+
+```
+
+### 基本資料呈現**
+```{r message=FALSE, warning=FALSE}
+names(iris) # 查看變數名
+dim(iris) # 查看列數與欄數
+summary(iris)#基本敘述性統計量
+summary(iris$Species)
+
+head(iris, 12)   #只看前12筆資料
+tail(iris, 12) #只看尾巴12筆資料
+```
+
+### **使用第一組套件: tree**
+```{r message=FALSE, warning=FALSE}
+stree = tree(Species ~ ., data = iris)
+stree
+plot(stree)
+text(stree)
+```
+
+### **使用第二組套件: rpart**
+```{r message=FALSE, warning=FALSE}
+fit2 <- rpart(Species~.,data=iris)
+fit2
+prp(fit2,col=2,box.col="lightgray",shadow.col="gray") 
+
+```
+
+### **使用第三組套件: ctree**
+```{r message=FALSE, warning=FALSE}
+library(party)
+target <- Species ~ .
+cdt <- ctree(target, iris)
+plot(cdt,type="simple")
+```
+
+
+### **使用第四組套件: Random Forest**
+```{r message=FALSE, warning=FALSE}
+set.seed(777)
+iris.rf=randomForest(Species~.,data=iris,importane=T,proximity=T)
+print(iris.rf)
+100*(sum(predict(iris.rf)==iris$Species)/nrow(iris))
+```
+
